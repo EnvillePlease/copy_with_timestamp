@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+# Usage:
+#   copy_with_timestamp "source_file*.txt" /destination/path
+
+set -euo pipefail
+
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 \"source_pattern\" destination_directory"
+    exit 1
+fi
+
+pattern="$1"
+dest_dir="$2"
+
+if [ ! -d "$dest_dir" ]; then
+    echo "Error: destination directory does not exist: $dest_dir"
+    exit 1
+fi
+
+shopt -s nullglob
+
+files=( $pattern )
+
+if [ ${#files[@]} -eq 0 ]; then
+    echo "No files matched: $pattern"
+    exit 1
+fi
+
+timestamp=$(date +%Y%m%d_%H%M%S)
+
+for src in "${files[@]}"; do
+    filename=$(basename "$src")
+
+    if [[ "$filename" == *.* ]]; then
+        base="${filename%.*}"
+        ext=".${filename##*.}"
+    else
+        base="$filename"
+        ext=""
+    fi
+
+    dest="${dest_dir}/${base}_${timestamp}${ext}"
+
+    cp "$src" "$dest"
+
+    echo "Copied: $src -> $dest"
+done
