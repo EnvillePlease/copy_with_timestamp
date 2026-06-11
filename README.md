@@ -50,4 +50,4 @@ The timestamp is generated once per invocation, so all copies share the same suf
 
 ---
 
-© 2026 Clark Nelson
+© 2026 Clark Nelson MIT License
